@@ -1,2 +1,2 @@
 # ReproducibleReseach
-Only for the projects and assignments in Reproducible 
+Only for the projects and assignments in Reproducible Research
