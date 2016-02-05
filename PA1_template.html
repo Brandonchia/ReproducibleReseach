@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Loading the data</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h2>Loading the data</h2>
+
+<p>data1  &lt;- read.csv(&ldquo;activity.csv&rdquo;,na.string=&ldquo;NA&rdquo;)</p>
+
+<h2>Mean total number of steps taken per day</h2>
+
+<h3>The total number of steps taken per day</h3>
+
+<p>dailySum &lt;- tapply(data1$steps,data1$date,sum,na.rm=TRUE)</p>
+
+<h3>Histogram of the total number of steps taken each day</h3>
+
+<p>par(mfrow=c(1,1))
+hist(dailySum,xlab=&ldquo;Daily Sum&rdquo;)
+dev.copy(png,&ldquo;plot1.png&rdquo;)
+dev.off()</p>
+
+<h3>Mean and median of the total number of steps taken per day</h3>
+
+<h4>Mean</h4>
+
+<p>dailyMean&lt;- tapply(data1$steps,data1$date,mean,na.rm=TRUE)</p>
+
+<h4>Median</h4>
+
+<p>dailyMedian &lt;- tapply(data1$steps,data1$date,median,na.rm=TRUE)</p>
+
+<h2>The time series plot</h2>
+
+<p>crossDayMean &lt;- tapply(data1$steps,data1$interval,mean,na.rm=TRUE)
+plot(data1[1:288,]$interval,crossDayMean,type=&ldquo;l&rdquo;,xlab=&ldquo;interval&rdquo;,ylab=&ldquo;Cross Day Mean&rdquo;)
+dev.copy(png,&ldquo;plot2.png&rdquo;)
+dev.off()</p>
+
+<h3>Find the 5-minute interval containing the maximum number of steps</h3>
+
+<p>which.max(crossDayMean)</p>
+
+<h2>Imputing missing values</h2>
+
+<h3>Report the total number of missing value</h3>
+
+<p>numberNA &lt;- sum(is.na(data1$steps))
+data2 &lt;- data1</p>
+
+<h3>Filling strategy is mean for that 5 minute interval</h3>
+
+<p>#a &lt;- tapply(data2$steps,data2$interval,function(x){x&lt;-crossDayMean})
+a &lt;- data.frame(data2[1:288,]$interval,crossDayMean)
+colnames(a)&lt;-c(&ldquo;interval&rdquo;,&ldquo;crossDayMeman&rdquo;)
+data2&lt;-merge(data2,a,by.x=&ldquo;interval&rdquo;)
+for(i in 1:length(data2$steps)){
+        if(is.na(data3[i,]$steps)==TRUE){
+                data3[i,]$steps=data2[i,]$crossDayMean
+        }
+}</p>
+
+<h3>Make histogram of total number of steps taken each day</h3>
+
+<p>dailySum &lt;- tapply(data2$steps,data2$date,sum,na.rm=TRUE)
+hist(dailySum,xlab=&ldquo;Daily Sum&rdquo;)
+dev.copy(png,&ldquo;plot3.png&rdquo;)
+dev.off()</p>
+
+<h3>Calculate mean and median total number of steps taken per day</h3>
+
+<h4>Mean</h4>
+
+<p>dailyMeanAfter &lt;- tapply(data2$steps,data2$date,mean,na.rm=TRUE)</p>
+
+<h4>Median</h4>
+
+<p>dailyMedianAfter &lt;- tapply(data2$steps,data2$date,median,na.rm=TRUE)</p>
+
+<h2>Are there difference in activity patterns between weekdays and weekends</h2>
+
+<p>data2$date &lt;- as.Date(data2$date)</p>
+
+<h3>Create a new variable differentiating weekday and weekend</h3>
+
+<p>data2$week &lt;- weekdays(data2$date)
+data2$weekday &lt;- weekdays(data2$date)
+for(i in 1:length(data2$steps)){
+        if(data2[i,]$week==c(&ldquo;Saturday&rdquo;,&ldquo;Sunday&rdquo;)){
+                data2[i,]$weekday &lt;- &ldquo;weekend&rdquo;
+        } else {
+                data2[i,]$weekday &lt;- &ldquo;weekday&rdquo;
+                }
+}</p>
+
+<h3>Make the plot</h3>
+
+<p>par(mfrow=c(1,2))
+crossWeekdayMean &lt;- tapply(data2$steps,as.factor(data2$weekday),mean,na.rm=TRUE)
+plot(data2[1:288,]$interval,crossDayMean,type=&ldquo;l&rdquo;,xlab=&ldquo;interval&rdquo;,ylab=&ldquo;Cross Day Mean&rdquo;)
+plot(as.factor(c(&ldquo;weekday&rdquo;,&ldquo;weekend&rdquo;)),crossWeekdayMean,type=&ldquo;l&rdquo;,xlab=&ldquo;weekday or weekend&rdquo;,ylab=&ldquo;Cross Weekday Mean&rdquo;)
+dev.copy(png,&ldquo;plot4.png&rdquo;)
+dev.off()</p>
+
+</body>
+
+</html>
