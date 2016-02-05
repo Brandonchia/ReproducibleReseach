@@ -5,8 +5,8 @@ data1  <- read.csv("activity.csv",na.string="NA")
 ### The total number of steps taken per day
 dailySum <- tapply(data1$steps,data1$date,sum,na.rm=TRUE)
 ### Histogram of the total number of steps taken each day
-par(mfrow=c(1,1))
-hist(dailySum,xlab="Daily Sum")
+*par(mfrow=c(1,1))
+*hist(dailySum,xlab="Daily Sum")
 dev.copy(png,"plot1.png")
 dev.off()
 ### Mean and median of the total number of steps taken per day
